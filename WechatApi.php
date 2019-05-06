@@ -5,11 +5,10 @@
  * Date: 2019/4/23
  * Time: 18:58
  */
+require_once("config.inc.php");
 
 class WechatApi
 {
-    public static $appId = "wx7862699af0335b9a";
-    public static $appSecret = "509a0ca98eead7b13bcf36a0419a9c5a";
     public function __construct()
     {
     }
@@ -24,7 +23,7 @@ class WechatApi
             $access_token = $result["access_token"];
         }
         if (time() > ($expire_time + 3600)){
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".self::$appId."&secret=".self::$appSecret;
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$GLOBALS['app_id']."&secret=".$GLOBALS['app_secret'];
             $ch = curl_init();
             curl_setopt($ch,CURLOPT_URL,$url);
             curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,FALSE);
@@ -42,7 +41,7 @@ class WechatApi
         }
         return $access_token;
     }
-    public function http_curl($url,$type='get',$res='json',$arr=''){
+    public static function http_curl($url,$type='get',$arr='',$vert_peer=false){
 
         //1.初始化curl
         $ch  =curl_init();
@@ -50,14 +49,18 @@ class WechatApi
         //2.设置curl的参数
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-
+        curl_setopt($ch,CURLOPT_ENCODING,"");
+        curl_setopt($ch,CURLOPT_MAXREDIRS,10);
+        curl_setopt($ch,CURLOPT_TIMEOUT,30);
+        curl_setopt($ch,CURLOPT_HTTP_VERSION,CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,$vert_peer);
+//        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
         if($type == 'post'){
             curl_setopt($ch,CURLOPT_POST,1);
             curl_setopt($ch,CURLOPT_POSTFIELDS,$arr);
         }
         //3.采集
         $output =curl_exec($ch);
-
         //4.关闭
         curl_close($ch);
         if($output =='json'){
@@ -70,6 +73,13 @@ class WechatApi
                 return json_decode($output,true);
             }
         }
-        echo var_dump( $output );
+        return var_dump( $output );
+    }
+    public static function create_menu($menu)
+    {
+        $access_token = WechatApi::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
+        $ret_str = WechatApi::http_curl($url,"post",$menu,false);
+        echo $ret_str;
     }
 }
