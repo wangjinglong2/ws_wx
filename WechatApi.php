@@ -41,7 +41,7 @@ class WechatApi
         }
         return $access_token;
     }
-    public static function http_curl($url,$type='get',$arr='',$vert_peer=false){
+    public static function http_curl($url,&$output,$type='get',$arr='',$vert_peer=false){
 
         //1.初始化curl
         $ch  =curl_init();
@@ -59,27 +59,22 @@ class WechatApi
             curl_setopt($ch,CURLOPT_POST,1);
             curl_setopt($ch,CURLOPT_POSTFIELDS,$arr);
         }
-        //3.采集
         $output =curl_exec($ch);
-        //4.关闭
+        $errno = curl_errno($ch);
+        $error = curl_error($ch);
         curl_close($ch);
-        if($output =='json'){
-            if(curl_error($ch)){
-                //请求失败，返回错误信息
-                return curl_error($ch);
-            }else{
-                //请求成功，返回错误信息
-
-                return json_decode($output,true);
-            }
+        if ($errno) {
+            $output = $error;
+            return false;
         }
-        return var_dump( $output );
+        return true;
     }
     public static function create_menu($menu)
     {
         $access_token = WechatApi::get_access_token();
         $url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
-        $ret_str = WechatApi::http_curl($url,"post",$menu,false);
-        echo $ret_str;
+        $output = "";
+        $ret = WechatApi::http_curl($url,$output,"post",$menu,false);
+        echo $output;
     }
 }
