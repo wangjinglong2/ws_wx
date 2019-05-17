@@ -46,15 +46,15 @@ class JsSDK
         $res = file_get_contents($tkt_path);
         $result = json_decode($res, true);
         $expire_time = $result["expire_time"];
-        $jsapi_ticket = $result["jsapi_ticket"];
-        if (time() > ($expire_time + 3600)){
+        $jsapi_ticket = $result["ticket"];
+        if (time() > $expire_time){
             $accessToken = WechatApi::get_access_token();
             $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
             $ret = WechatApi::http_curl($url,$res);
             $result = json_decode($res, true);
-            $jsapi_ticket = $result["jsapi_ticket"];
-            $expire_time = time();
-            file_put_contents($tkt_path, '{"jsapi_ticket": "'.$jsapi_ticket.'", "expire_time": '.$expire_time.'}');
+            $jsapi_ticket = $result["ticket"];
+            $expire_time = time()+3600;
+            file_put_contents($tkt_path, '{"ticket": "'.$jsapi_ticket.'", "expire_time": '.$expire_time.'}');
         }
         return $jsapi_ticket;
     }
