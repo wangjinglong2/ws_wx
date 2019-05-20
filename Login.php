@@ -61,6 +61,12 @@ $sgn = $sdk->getSignPackage();
         <a href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary" onclick="bind_user()">确定</a>
     </div>
 </div>
+<form name="f1" method="post" action="Login2.php">
+    <input type="hidden" name="user" value="">
+    <input type="hidden" name="passwd" value="">
+    <input type="hidden" name="openid" value="<?php echo $openid;?>">
+    <input type="hidden" name="user_info" value="<?php echo $user_info;?>">
+</form>
 </body>
 <script>
     function bind_user()
@@ -77,6 +83,10 @@ $sgn = $sdk->getSignPackage();
             $('#passwd').focus();
             return;
         }
+        document.f1.user.value=user;
+        document.f1.passwd.value=pwd;
+        document.f1.submit();
+        return;
         var openid = "<?php echo $openid; ?>" ;
         var user_info = <?php echo $user_info; ?>;
         $.ajax({
@@ -85,10 +95,14 @@ $sgn = $sdk->getSignPackage();
             dataType: "json",
             data: {'user':user,'passwd':pwd,'openid':openid,'user_info':user_info},
             success: function(msg){
-                alert(msg.info);
+                alert("绑定成功");
+                return;
                 if(msg.state==1){
                     WeixinJSBridge.call('closeWindow');
                 }
+            },error:function(err){
+                alert("绑定失败");
+                return;
             }
         });
     }

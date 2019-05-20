@@ -1,13 +1,13 @@
 CREATE TABLE `XT_WxWenDa` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID±àÂë',
-  `type` int(1) NOT NULL DEFAULT '0' COMMENT '·ÖÀà',
-  `protype` varchar(20) NOT NULL COMMENT '²úÆ·ÀàĞÍ',
-  `keywords` varchar(50) NOT NULL COMMENT '¹Ø¼ü×Ö',
-  `question` varchar(200) NOT NULL COMMENT 'ÎÊÌâ',
-  `answer` text NOT NULL COMMENT '´ğ°¸',
-  `creater` varchar(50) NOT NULL DEFAULT '' COMMENT '´´½¨ÈË',
-  `createtime` datetime DEFAULT NULL COMMENT '´´½¨Ê±¼ä',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'IDç¼–ç ',
+  `type` int(1) NOT NULL DEFAULT '0' COMMENT 'åˆ†ç±»',
+  `protype` varchar(20) NOT NULL COMMENT 'äº§å“ç±»å‹',
+  `keywords` varchar(50) NOT NULL COMMENT 'å…³é”®å­—',
+  `question` varchar(200) NOT NULL COMMENT 'é—®é¢˜',
+  `answer` text NOT NULL COMMENT 'ç­”æ¡ˆ',
+  `creater` varchar(50) NOT NULL DEFAULT '' COMMENT 'åˆ›å»ºäºº',
+  `createtime` datetime DEFAULT NULL COMMENT 'åˆ›å»ºæ—¶é—´',
   PRIMARY KEY (`id`),
   KEY `protype` (`protype`),
   KEY `keywords` (`keywords`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Õû×°ÊÛºóÎÊ´ğ¼¯ºÏ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='æ•´è£…å”®åé—®ç­”é›†åˆ'

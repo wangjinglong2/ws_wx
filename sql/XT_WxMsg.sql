@@ -1,12 +1,12 @@
 CREATE TABLE `XT_WxMsg` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID±àÂë',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'IDç¼–ç ',
   `groupid` int(11) NOT NULL DEFAULT '0',
-  `xtuser` varchar(100) NOT NULL COMMENT '½ÓÊÕÓÃ»§',
-  `message` text NOT NULL COMMENT 'ÏûÏ¢ÄÚÈİ',
-  `pdate` datetime DEFAULT NULL COMMENT '·¢ËÍÈÕÆÚ',
-  `flag` int(1) DEFAULT '0' COMMENT 'ÏûÏ¢×´Ì¬',
+  `xtuser` varchar(100) NOT NULL COMMENT 'æ¥æ”¶ç”¨æˆ·',
+  `message` text NOT NULL COMMENT 'æ¶ˆæ¯å†…å®¹',
+  `pdate` datetime DEFAULT NULL COMMENT 'å‘é€æ—¥æœŸ',
+  `flag` int(1) DEFAULT '0' COMMENT 'æ¶ˆæ¯çŠ¶æ€',
   PRIMARY KEY (`id`),
   KEY `xtuser` (`xtuser`),
   KEY `pdate` (`pdate`),
   KEY `groupid` (`groupid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ÏûÏ¢ÁĞ±í'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='æ¶ˆæ¯åˆ—è¡¨'

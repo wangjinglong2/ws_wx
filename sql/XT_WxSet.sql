@@ -1,9 +1,9 @@
 CREATE TABLE `XT_WxSet` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `nonworkdays` date NOT NULL COMMENT '·Ç¹¤×÷ÈÕÈÕÆÚ',
-  `comment` varchar(255) NOT NULL DEFAULT '' COMMENT 'ÌáÊ¾ÄÚÈİ',
-  `state` tinyint(4) NOT NULL DEFAULT '0' COMMENT '×´Ì¬',
-  `creater` varchar(50) DEFAULT NULL COMMENT '´´½¨ÈË',
-  `createtime` datetime DEFAULT NULL COMMENT '´´½¨Ê±¼ä',
+  `nonworkdays` date NOT NULL COMMENT 'éå·¥ä½œæ—¥æ—¥æœŸ',
+  `comment` varchar(255) NOT NULL DEFAULT '' COMMENT 'æç¤ºå†…å®¹',
+  `state` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'çŠ¶æ€',
+  `creater` varchar(50) DEFAULT NULL COMMENT 'åˆ›å»ºäºº',
+  `createtime` datetime DEFAULT NULL COMMENT 'åˆ›å»ºæ—¶é—´',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='·Ç¹¤×÷ÈÕ×Ô¶¯»Ø¸´ÌáĞÑÉèÖÃ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='éå·¥ä½œæ—¥è‡ªåŠ¨å›å¤æé†’è®¾ç½®'

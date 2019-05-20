@@ -55,7 +55,7 @@ class WechatApi
         curl_setopt($ch,CURLOPT_HTTP_VERSION,CURL_HTTP_VERSION_1_1);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,$vert_peer);
 //        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
-        if($type == 'post'){
+        if(strtolower($type) == 'post'){
             curl_setopt($ch,CURLOPT_POST,1);
             curl_setopt($ch,CURLOPT_POSTFIELDS,$arr);
         }

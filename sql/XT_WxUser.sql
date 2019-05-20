@@ -7,6 +7,6 @@ CREATE TABLE `XT_WxUser` (
   `subscribe_time` int(11) DEFAULT NULL,
   `comment` varchar(100) DEFAULT NULL,
   `flag` tinyint(4) NOT NULL DEFAULT '0',
-  `idtype` tinyint(4) NOT NULL DEFAULT '1' COMMENT '¹«ÖÚºÅÀà±ğ1·şÎñÖĞĞÄ2ÎïÁ÷ÖĞĞÄ',
+  `idtype` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'å…¬ä¼—å·ç±»åˆ«1æœåŠ¡ä¸­å¿ƒ2ç‰©æµä¸­å¿ƒ',
   PRIMARY KEY (`openid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
