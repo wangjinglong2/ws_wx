@@ -28,35 +28,53 @@ $menu ='{
                 "url":"'.$GLOBALS['root_url'].'OAuth2.php"
           }]
        },{
-            "name":"状态",
+            "name":"店面秘籍",
             "sub_button":[
             {
                 "type":"view",
-                "name":"从库延迟",
+                "name":"工艺下单标准",
                 "url":"http://www.baidu.com"
             },{
                 "type":"view",
-                "name":"TPS",
+                "name":"安装售后保养",
                 "url":"http://www.baidu.com"
             },{
                 "type":"view",
-                "name":"连接数",
+                "name":"常见问题处理",
+                "url":"http://www.baidu.com"
+            },{
+                "type":"view",
+                "name":"新产品介绍",
+                "url":"http://www.baidu.com"
+            },{
+                "type":"view",
+                "name":"配套产品详解",
                 "url":"http://www.baidu.com"
             }]          
        },{
-            "name":"管理",
+            "name":"精选干货",
             "sub_button":[
             {
                 "type":"view",
-                "name":"登陆",
-                "url":"http://www.baidu.com"
+                "name":"尚品美家",
+                "url":"https://shr.yfway.com/index.php?s=/Home/Topline/index/brand/0/v/3/share_from/12"
             },{
                 "type":"view",
-                "name":"停止/启动复制",
-                "url":"http://www.baidu.com"
+                "name":"维意美家",
+                "url":"https://shr.yfway.com/index.php?s=/Home/Topline/index/brand/1/v/3/share_from/13"
             },{
                 "type":"view",
-                "name":"主库只读/取消",
+                "name":"精选干货",
+                "url":"http://www.baidu.com"
+            },{
+                "type":"miniprogram",
+                 "name":"量尺宝",
+                 "url":"http://dpf.yfway.com/index.php?s=/Weixin/Neoweb/liangchibao_miniprogrampages",
+                 "appid":"wx530ad84be2e64aeb",
+                 "pagepath":"pages/index/index"
+            },{
+                "type":"view",
+                "name":"整装售后问答",
                 "url":"http://www.baidu.com"
             }]  
        }]

@@ -67,6 +67,25 @@ $sgn = $sdk->getSignPackage();
     <input type="hidden" name="openid" value="<?php echo $openid;?>">
     <input type="hidden" name="user_info" value="<?php echo $user_info;?>">
 </form>
+<?php
+
+$sql = "SELECT a.XtUser,a.openid,b.trueName FROM XT_Wx2Xt a,LoginUser b,XT_WxUser c WHERE a.XtUser=b.loginName AND a.openid=c.openid and c.flag=1 AND a.openid=? ";
+$stmt = $db->prepare($sql);
+$stmt->bind_param('s', $openid);
+$stmt->execute();
+$stmt->store_result();
+$stmt->bind_result($XtUser,$openid,$trueName);
+if($stmt->num_rows>0)
+{
+    echo "<p>目前已经绑定以下帐号</p>";
+    echo '<table border="1" style="width: 100%;"><tr><th style="width: 50%">帐号</th><th style="width: 50%">姓名</th></tr>';
+    while ( $stmt->fetch()){
+        echo "<tr><td style='text-align: center'>".$XtUser."</td><td style='text-align: center'>".$trueName."</td></tr>";
+    }
+    echo '</table>';
+}
+
+?>
 </body>
 <script>
     function bind_user()
@@ -83,10 +102,10 @@ $sgn = $sdk->getSignPackage();
             $('#passwd').focus();
             return;
         }
-        document.f1.user.value=user;
-        document.f1.passwd.value=pwd;
-        document.f1.submit();
-        return;
+        // document.f1.user.value=user;
+        // document.f1.passwd.value=pwd;
+        // document.f1.submit();
+        // return;
         var openid = "<?php echo $openid; ?>" ;
         var user_info = <?php echo $user_info; ?>;
         $.ajax({
@@ -95,10 +114,10 @@ $sgn = $sdk->getSignPackage();
             dataType: "json",
             data: {'user':user,'passwd':pwd,'openid':openid,'user_info':user_info},
             success: function(msg){
-                alert("绑定成功");
-                return;
                 if(msg.state==1){
-                    WeixinJSBridge.call('closeWindow');
+                    alert("绑定成功");
+                    wx.closeWindow();
+                    return;
                 }
             },error:function(err){
                 alert("绑定失败");

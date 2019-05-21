@@ -77,4 +77,9 @@ class WechatApi
         $ret = WechatApi::http_curl($url,$output,"post",$menu,false);
         echo $output;
     }
+    //测试号未开通多客服功能
+    public static function create_kf_account()
+    {
+
+    }
 }
