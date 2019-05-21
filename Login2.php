@@ -57,11 +57,12 @@ try{
 try{
     $sqla ="SELECT count(*) count FROM XT_Wx2Xt a WHERE a.XtUser=? AND a.openid=? ";
     if ($stmt = $db->prepare($sqla)) {
-        $stmt->bind_param('ss', $users,$openid);
+        $stmt->bind_param('ss', $user,$openid);
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($count);
         $row = $stmt->fetch();
+        $Oldopenid="";
         if($count > 0){
             $arr = array(
                 "info" => '该用户名已经绑定微信号',
@@ -78,7 +79,6 @@ try{
                 $stmt->store_result();
                 $stmt->bind_result($XtUser,$Oldopenid);
                 $row = $stmt->fetch();
-
                 if($row){
                     //如果只绑定过一个帐号可以直接修改旧的openid 多条则不改旧的openid
                     $sqlb ="SELECT a.openid FROM XT_Wx2Xt a WHERE a.openid=? ";
@@ -164,7 +164,7 @@ try{
                     }else{
                         $db->rollback();
                         $arr = array(
-                            "info" => '绑定失败'.$db->error,
+                            "info" => 'here'.$db->error,
                             "name" => 'response3',
                             "state" => '0'
                         );
@@ -180,23 +180,23 @@ try{
 echo json_encode($arr);
 
 //调换分组
-$access_token = WechatApi::get_access_token();
-$url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=".$access_token;
-$data = '{"openid":"'.$openid.'","to_groupid":100}';
-$ret = WechatApi::http_curl($url,$output,'post',$data);
-
-if($Oldopenid){
-    $url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=".$access_token;
-    $data = '{"openid":"'.$Oldopenid.'","to_groupid":0}';
-    $ret = WechatApi::http_curl($url,$output,'post',$data);
-}
-//修改备注姓名_店名
-$ShopName = "测试";
-if($ShopName!=''){
-    $url ="https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=".$access_token;
-    $remark = $trueName.'_'.$ShopName;
-    $remark = substr($remark,0,30);
-    $data ='{"openid":"'.$openid.'","remark":"'.$remark.'"}';
-    $ret = WechatApi::http_curl($url,$output,'post',$data);
-}
+//$access_token = WechatApi::get_access_token();
+//$url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=".$access_token;
+//$data = '{"openid":"'.$openid.'","to_groupid":100}';
+//$ret = WechatApi::http_curl($url,$output,'post',$data);
+//
+//if($Oldopenid){
+//    $url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=".$access_token;
+//    $data = '{"openid":"'.$Oldopenid.'","to_groupid":0}';
+//    $ret = WechatApi::http_curl($url,$output,'post',$data);
+//}
+////修改备注姓名_店名
+//$ShopName = "";
+//if($ShopName!=''){
+//    $url ="https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=".$access_token;
+//    $remark = $trueName.'_'.$ShopName;
+//    $remark = substr($remark,0,30);
+//    $data ='{"openid":"'.$openid.'","remark":"'.$remark.'"}';
+//    $ret = WechatApi::http_curl($url,$output,'post',$data);
+//}
 ?>

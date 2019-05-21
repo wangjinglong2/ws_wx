@@ -6,6 +6,7 @@
  * Time: 18:58
  */
 require_once("config.inc.php");
+require_once("WechatReply.php");
 
 class WechatApi
 {
@@ -64,8 +65,7 @@ class WechatApi
         $error = curl_error($ch);
         curl_close($ch);
         if ($errno) {
-            $output = $error;
-            return false;
+            die("curl执行出错,code:".$errno.",msg:".$error);
         }
         return true;
     }
@@ -76,5 +76,108 @@ class WechatApi
         $output = "";
         $ret = WechatApi::http_curl($url,$output,"post",$menu,false);
         echo $output;
+    }
+    //测试号未开通多客服功能
+    public static function create_kf_account()
+    {
+
+    }
+    /**
+     * 获取永久素材总数
+     *
+     */
+    public static function get_material_count(){
+        $access_token = self::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=".$access_token;
+        $ret = self::http_curl($url,$datas);
+        return  json_decode($datas);
+    }
+    /**
+     * 获取永久素材列表
+     * data 参数	是否必须	说明
+    type	是	素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
+    offset	是	从全部素材的该偏移位置开始返回，0表示从第一个素材 返回
+    count	是	返回素材的数量，取值在1到20之间,
+     */
+    public static function batchget_material($type,$offset=0,$count){
+        $access_token =self::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=".$access_token;
+        $data = '{
+					    "type":"'.$type.'",
+					    "offset":"'.$offset.'",
+					    "count":"'.$count.'"
+					}';
+        $output="";
+        $ret = self::http_curl($url,$output,'post',$data);
+        return  $output;
+    }
+
+    /**
+     *
+     *获取永久素材
+     *参数	是否必须	说明
+    access_token	是	调用接口凭证
+    media_id	是	要获取的素材的media_id
+    视频消息素材：
+    {
+    "title":TITLE,
+    "description":DESCRIPTION,
+    "down_url":DOWN_URL,
+    }
+     */
+    public static function get_material($media_id){
+        $access_token = self::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=".$access_token;
+        $data = '{
+					    "media_id":"'.$media_id.'"
+					}';
+        $output= "";
+        $ret = self::http_curl($url,$output,'post',$data);
+        return  $output;
+    }
+    /*
+     *         WechatReply::sendMessage($GLOBALS['my_openid'],$filename);
+        exit;
+     * */
+    public static function download_img($url = "", $filename = ""){
+        $ret = WechatApi::http_curl($url,$file);
+        $filename = pathinfo($filename, PATHINFO_BASENAME);
+        $temp_dir = sys_get_temp_dir();
+        $file_path = sprintf('%s%s.png',$temp_dir,$filename);
+        if (IS_WIN) $file_path=str_replace('/','\\',$file_path);
+        $resource = fopen($file_path, 'a');
+        fwrite($resource, $file);
+        fclose($resource);
+        return $file;
+    }
+    public static function upload_img($file_path)
+    {
+        $curl = curl_init();
+        $url = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=".self::get_access_token();
+        if (class_exists('\CURLFile')) {
+            curl_setopt($curl, CURLOPT_SAFE_UPLOAD, true);
+            $data = array('file' => new \CURLFile(realpath($file_path)));//>=5.5
+        } else {
+            if (defined('CURLOPT_SAFE_UPLOAD')) {
+                curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
+            }
+            $data = array('file' => '@' . realpath($file_path));//<=5.5
+        }
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, 1 );
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($curl, CURLOPT_USERAGENT,"TEST");
+        $result = curl_exec($curl);
+        if (curl_errno($curl)){
+            $result = curl_error($curl);
+            WechatReply::sendMessage($GLOBALS['my_openid'],"上传图片有误,msg:".$result.",code:".curl_errno($curl));
+            curl_close($curl);
+            exit;
+        }
+        curl_close($curl);
+        WechatReply::sendMessage($GLOBALS['my_openid'],"上传图片成功,msg:".json_encode($result));
+        exit;
     }
 }

@@ -122,4 +122,84 @@ class WechatReply
         $resultStr = sprintf($replyXml,$obj->FromUserName,$obj->ToUserName,time(),count($newsArr));
         return $resultStr;
     }
+
+    //回复多客服消息
+    public static function transmitService($object)
+    {
+        $xmlTpl = "<xml>
+						<ToUserName><![CDATA[%s]]></ToUserName>
+						<FromUserName><![CDATA[%s]]></FromUserName>
+						<CreateTime>%s</CreateTime>
+						<MsgType><![CDATA[transfer_customer_service]]></MsgType>
+						</xml>";
+        $result = sprintf($xmlTpl, $object->FromUserName, $object->ToUserName, time());
+        return $result;
+    }
+
+    //客服接口发信息
+    public static function sendMessage($openid,$message){
+        $access_token = WechatApi::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=".$access_token;
+        $data = '{
+					    "touser":"'.$openid.'",
+					    "msgtype":"text",
+					    "text":
+					    {
+					         "content":"'.$message.'"
+					    }
+					}';
+        $ret = WechatApi::http_curl($url,$output,'post',$data);
+        return json_decode($output,true);
+    }
+
+    //模版接口发信息
+    public static function sendTemplateMessage($message,$openid,$pdate){
+        $access_token = WechatApi::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$access_token;
+        $data = '{
+			           "touser":"'.$openid.'",
+			           "template_id":"QP_BJ3qCOV8ZSjPDLmRpf4Ys6OPNET72P2Ed8clMxWE",
+			           "url":"",            
+			           "data":{
+			                   "status":{
+			                       "value":"新消息",
+			                       "color":"#173177"
+			                   },
+			                   "cur_date": {
+			                       "value":"'.$pdate.'",
+			                       "color":"#173177"
+			                   },
+			                   "content": {
+			                       "value":"'.$message.'",
+			                       "color":"#173177"
+			                   }
+			           }
+			       }';
+        $ret = WechatApi::http_curl($url,$output,'post',$data);
+        return  json_decode($output,true);;
+    }
+    //获取客服列表
+    function getkfopenids(){
+       // include "cmysqli.php";
+        $aa = '';
+//        $sql = "SELECT openid FROM XT_WxUser WHERE wxkf=1 and flag =1 ";
+//        if ($stmt = $db->prepare ( $sql )) {
+//            // $stmt->bind_param('s', 'oi4yrs9hoa_2BIFamBkNsTwU7ILg');
+//            $stmt->execute ();
+//            $stmt->store_result ();
+//            $stmt->bind_result ( $openid );
+//
+//            //$i = 0;
+//            while ( $stmt->fetch () ) {
+//                //$aa [$i] ['openid'] = $openid;
+//                $aa[] = $openid;
+//                //$i ++;
+//            }
+//            $stmt->close ();
+//            $mysqli->close ();
+//        } else {
+//            die ( $mysqli->error );
+//        }
+        return $aa;
+    }
 }
