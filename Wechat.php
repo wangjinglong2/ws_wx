@@ -85,7 +85,7 @@ class Wechat
             $pdate = date("Y-m-d H:i:s");
             if($stmt = $db->prepare($sql))
             {
-                $stmt->bind_param ( 'sss', $states, $cur_date );
+                $stmt->bind_param ( 'ss', $states, $cur_date );
                 $stmt->execute ();
                 $stmt->store_result ();
                 $stmt->bind_result ( $nonworkdays, $comment );
@@ -100,7 +100,7 @@ class Wechat
                 $result = WechatReply::replyText( $obj, $content );
                 $db->error;
             }
-
+            date_default_timezone_set('Asia/Shanghai');
             $d1 = date("H:i:s");
             if( ($d1 >= '00:00:00' && $d1 <= '08:00:00') || ($d1 >= '12:00:00' && $d1<= '13:30:00') || ($d1 >= '17:30:00' && $d1< '24:00:00')){
                 $sta = 3 ;
@@ -136,7 +136,8 @@ class Wechat
             $content = "欢迎关注WS订单系统\n请先绑定订单系统帐号";
             $result =  WechatReply::replyText($obj,$content);
         }
-        echo $result;exit;
+        echo $result;
+        exit;
     }
     public function receiveEvent($obj)
     {
