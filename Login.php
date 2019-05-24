@@ -6,6 +6,7 @@
  * Time: 17:19
  */
 require("config.inc.php");
+require("WechatApi.php");
 require("JsSDK.php");
 
 $code = isset($_GET['code'])?$_GET['code']:"";
@@ -61,12 +62,6 @@ $sgn = $sdk->getSignPackage();
         <a href="javascript:;" class="weui-btn weui-btn_block weui-btn_primary" onclick="bind_user()">确定</a>
     </div>
 </div>
-<form name="f1" method="post" action="Login2.php">
-    <input type="hidden" name="user" value="">
-    <input type="hidden" name="passwd" value="">
-    <input type="hidden" name="openid" value="<?php echo $openid;?>">
-    <input type="hidden" name="user_info" value="<?php echo $user_info;?>">
-</form>
 <?php
 
 $sql = "SELECT a.XtUser,a.openid,b.trueName FROM XT_Wx2Xt a,LoginUser b,XT_WxUser c WHERE a.XtUser=b.loginName AND a.openid=c.openid and c.flag=1 AND a.openid=? ";
@@ -102,10 +97,6 @@ if($stmt->num_rows>0)
             $('#passwd').focus();
             return;
         }
-        // document.f1.user.value=user;
-        // document.f1.passwd.value=pwd;
-        // document.f1.submit();
-        // return;
         var openid = "<?php echo $openid; ?>" ;
         var user_info = <?php echo $user_info; ?>;
         $.ajax({
@@ -117,6 +108,9 @@ if($stmt->num_rows>0)
                 if(msg.state==1){
                     alert("绑定成功");
                     wx.closeWindow();
+                    return;
+                }else{
+                    alert(msg.info);
                     return;
                 }
             },error:function(err){

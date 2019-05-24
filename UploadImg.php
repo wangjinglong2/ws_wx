@@ -8,5 +8,6 @@
 require "WechatApi.php";
 
 $path = "C:\wamp64\www\ws_wx\img\cover.jpg";
+//WechatApi::upload_timg($path);
 WechatApi::upload_img($path);
 ?>

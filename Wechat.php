@@ -7,6 +7,7 @@
  */
 require_once('WechatReply.php');
 require_once('config.inc.php');
+require_once('WechatApi.php');
 
 class Wechat
 {
@@ -159,7 +160,6 @@ class Wechat
                 $subtime = $userinfo["subscribe_time"];
                 $comment = '';
                 $flag1 = 0;
-                print_r($userinfo);
                 //先判断该openid是否已经存在 如果存在且flag=3 把flag改为1,自动分组	,如果flag=2  把flag改为0	如果没有，就插入
                 $sqla = "SELECT openid,flag FROM XT_WxUser WHERE openid=? and flag in (2,3)";
                 if($stmt = $db->prepare($sqla))
@@ -171,7 +171,7 @@ class Wechat
                     if($stmt->fetch()){
                         if($flag==3){
                             $sql ="UPDATE XT_WxUser a SET a.flag=1,nickname=?,sex=?,headimgurl=?,city=?,province=?,country=?,subscribe_time=?,comment=?,subscribe_scene=? WHERE a.openid=? ";
-                            //$res = $this->UPWxGroup($openid);
+                            $res = WechatApi::update_user_group($openid);
                         }else {
                             $sql ="UPDATE XT_WxUser a SET a.flag=0,nickname=?,sex=?,headimgurl=?,city=?,province=?,country=?,subscribe_time=?,comment=?,subscribe_scene=? WHERE a.openid=? ";
                         }

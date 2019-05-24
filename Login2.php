@@ -6,6 +6,7 @@
  * Time: 13:08
  */
 require_once("config.inc.php");
+global $db;
 
 $user = isset($_POST['user'])?$_POST['user']:"";
 $pwd  = isset($_POST['passwd'])?$_POST['passwd']:"";
@@ -16,7 +17,7 @@ if ($openid==""){
     echo json_encode(array('code'=>0,'msg'=>'用户openid为空'));
     exit;
 }
-global $db;
+
 try{
     $query = "SELECT a.loginName,loginPwd,PASSWORD('$pwd') as mloginPwd,a.trueName FROM LoginUser a WHERE a.loginName= ?";
     if ($stmt = $db->prepare($query)) {
@@ -47,7 +48,9 @@ try{
         }
     }
 }catch (\Exception $exception){
-    die("error_code:".$exception->getCode().",msg:".$exception->getMessage());
+    $msg = "error_code:".$exception->getCode().",msg:".$exception->getMessage();
+    echo json_encode(array("info"=>$msg,"state"=>0));
+    exit;
 }
 
 

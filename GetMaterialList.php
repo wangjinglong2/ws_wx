@@ -15,8 +15,8 @@ require "WechatApi.php";
 $act = isset($_GET['act'])?$_GET['act']:"";
 if ($act=="") die("请输入参数act");
 if($act == 'batch'){
-    $get_materialcount = WechatApi::get_material_count();
-    print_r($get_materialcount);
+    $temp_str = WechatApi::get_material_count();
+    $get_materialcount = json_decode($temp_str);
     if (!isset($get_materialcount["news_count"])) die("获取素材数目失败");
     $news_count = $get_materialcount["news_count"];
     $offset = 0;
@@ -25,10 +25,10 @@ if($act == 'batch'){
         $p = ceil($news_count/20);
         for($i = 0; $i < $p; $i++){
             $offset = $i * 20;
-            $datas[] = WechatApi::batchget_material($type,$offset, 20);
+            $datas[] = json_decode(WechatApi::batchget_material($type,$offset, 20),true);
         }
     }else{
-        $datas[] = WechatApi::batchget_material($type,$offset, 20);
+        $datas[] = json_decode(WechatApi::batchget_material($type,$offset, 20));
     }
     echo json_encode($datas);
 }else if($act == 'one'){

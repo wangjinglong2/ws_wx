@@ -1,5 +1,4 @@
 <?php
-require_once("WechatApi.php");
 defined('TOKEN') or define('TOKEN','hhy1314');
 
 $root_url = "http://dbmonitor.natapp1.cc/ws_wx/";

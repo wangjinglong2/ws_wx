@@ -6,6 +6,7 @@
  * Time: 17:27
  */
 require_once("config.inc.php");
+require_once("WechatApi.php");
 
 $menu ='{
      "button":[
@@ -37,19 +38,19 @@ $menu ='{
             },{
                 "type":"view",
                 "name":"安装售后保养",
-                "url":"http://www.baidu.com"
+                "url":"'.$GLOBALS['root_url'].'MaterialList?type=3"
             },{
                 "type":"view",
                 "name":"常见问题处理",
-                "url":"http://www.baidu.com"
+                "url":"'.$GLOBALS['root_url'].'MaterialList?type=4"
             },{
                 "type":"view",
                 "name":"新产品介绍",
-                "url":"http://www.baidu.com"
+                "url":"'.$GLOBALS['root_url'].'MaterialList?type=5"
             },{
                 "type":"view",
                 "name":"配套产品详解",
-                "url":"http://www.baidu.com"
+                "url":"'.$GLOBALS['root_url'].'MaterialList?type=6"
             }]          
        },{
             "name":"精选干货",
@@ -65,7 +66,7 @@ $menu ='{
             },{
                 "type":"view",
                 "name":"精选干货",
-                "url":"http://www.baidu.com"
+                "url":"'.$GLOBALS['root_url'].'MaterialList?type=1"
             },{
                 "type":"miniprogram",
                  "name":"量尺宝",
@@ -75,7 +76,7 @@ $menu ='{
             },{
                 "type":"view",
                 "name":"整装售后问答",
-                "url":"http://www.baidu.com"
+                "url":"'.$GLOBALS['root_url'].'QACenter.php"
             }]  
        }]
        }';

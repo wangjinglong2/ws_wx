@@ -7,6 +7,7 @@
  */
 require_once("config.inc.php");
 require_once("WechatReply.php");
+require_once("common.php");
 
 class WechatApi
 {
@@ -23,7 +24,7 @@ class WechatApi
             $expire_time = $result["expire_time"];
             $access_token = $result["access_token"];
         }
-        if (time() > ($expire_time + 3600)){
+        if (time() > $expire_time){
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$GLOBALS['app_id']."&secret=".$GLOBALS['app_secret'];
             $ch = curl_init();
             curl_setopt($ch,CURLOPT_URL,$url);
@@ -37,13 +38,22 @@ class WechatApi
             curl_close($ch);
             $result = json_decode($res, true);
             $access_token = $result["access_token"];
-            $expire_time = time();
+            $expire_time = time()+3600;
             file_put_contents('./access_token.json', '{"access_token": "'.$access_token.'", "expire_time": '.$expire_time.'}');
         }
         return $access_token;
     }
-    public static function http_curl($url,&$output,$type='get',$arr='',$vert_peer=false){
+    /**
+     * 模拟浏览器发送 get post请求
+     * @param string $url request url
+     * @param string OUT $output json string output
+     * @param string $post_data json string post data input
+     * @param bool $vert_peer whether vertify client ca
+     * @return bool
+    */
+    public static function http_curl($url,&$output,$post_data='',$vert_peer=false){
 
+        $output="";
         //1.初始化curl
         $ch  =curl_init();
 
@@ -55,17 +65,18 @@ class WechatApi
         curl_setopt($ch,CURLOPT_TIMEOUT,30);
         curl_setopt($ch,CURLOPT_HTTP_VERSION,CURL_HTTP_VERSION_1_1);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,$vert_peer);
-//        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
-        if(strtolower($type) == 'post'){
+        if($post_data!=""){
             curl_setopt($ch,CURLOPT_POST,1);
-            curl_setopt($ch,CURLOPT_POSTFIELDS,$arr);
+            curl_setopt($ch,CURLOPT_POSTFIELDS,$post_data);
         }
+        //返回值为json字符串
         $output =curl_exec($ch);
         $errno = curl_errno($ch);
         $error = curl_error($ch);
         curl_close($ch);
         if ($errno) {
-            die("curl执行出错,code:".$errno.",msg:".$error);
+            $output = json_encode(array('errno'=>$errno,'error'=>$error));
+            return false;
         }
         return true;
     }
@@ -74,7 +85,7 @@ class WechatApi
         $access_token = WechatApi::get_access_token();
         $url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
         $output = "";
-        $ret = WechatApi::http_curl($url,$output,"post",$menu,false);
+        $ret = WechatApi::http_curl($url,$output,$menu);
         echo $output;
     }
     //测试号未开通多客服功能
@@ -84,13 +95,14 @@ class WechatApi
     }
     /**
      * 获取永久素材总数
-     *
+     * @return json string
      */
     public static function get_material_count(){
         $access_token = self::get_access_token();
         $url = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=".$access_token;
         $ret = self::http_curl($url,$datas);
-        return  json_decode($datas);
+        if (!$ret) $datas=json_encode(array());
+        return  $datas;
     }
     /**
      * 获取永久素材列表
@@ -108,7 +120,8 @@ class WechatApi
 					    "count":"'.$count.'"
 					}';
         $output="";
-        $ret = self::http_curl($url,$output,'post',$data);
+        $ret = self::http_curl($url,$output,$data);
+        if (!$ret) $output=json_encode(array());
         return  $output;
     }
 
@@ -132,7 +145,8 @@ class WechatApi
 					    "media_id":"'.$media_id.'"
 					}';
         $output= "";
-        $ret = self::http_curl($url,$output,'post',$data);
+        $ret = self::http_curl($url,$output,$data);
+        if (!$ret) $output=json_encode(array());
         return  $output;
     }
     /*
@@ -144,12 +158,15 @@ class WechatApi
         $filename = pathinfo($filename, PATHINFO_BASENAME);
         $temp_dir = sys_get_temp_dir();
         $file_path = sprintf('%s%s.png',$temp_dir,$filename);
-        if (IS_WIN) $file_path=str_replace('/','\\',$file_path);
+        if (IsWindows()) $file_path=str_replace('/','\\',$file_path);
         $resource = fopen($file_path, 'a');
         fwrite($resource, $file);
         fclose($resource);
         return $file;
     }
+    /**
+     * 上传图片永久素材
+    */
     public static function upload_img($file_path)
     {
         $curl = curl_init();
@@ -177,7 +194,54 @@ class WechatApi
             exit;
         }
         curl_close($curl);
-        WechatReply::sendMessage($GLOBALS['my_openid'],"上传图片成功,msg:".json_encode($result));
+        $json_obj = json_decode($result);
+        WechatReply::sendMessage($GLOBALS['my_openid'],"上传图片成功,url:".$json_obj->url);
         exit;
+    }
+    /**
+     * 上传临时图片素材
+    */
+    public static function upload_timg($file_path)
+    {
+        $curl = curl_init();
+        $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".self::get_access_token()."&type=image";
+        if (class_exists('\CURLFile')) {
+            curl_setopt($curl, CURLOPT_SAFE_UPLOAD, true);
+            $data = array('file' => new \CURLFile(realpath($file_path)));//>=5.5
+        } else {
+            if (defined('CURLOPT_SAFE_UPLOAD')) {
+                curl_setopt($curl, CURLOPT_SAFE_UPLOAD, false);
+            }
+            $data = array('file' => '@' . realpath($file_path));//<=5.5
+        }
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, 1 );
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($curl, CURLOPT_USERAGENT,"TEST");
+        $result = curl_exec($curl);
+        if (curl_errno($curl)){
+            $result = curl_error($curl);
+            WechatReply::sendMessage($GLOBALS['my_openid'],"上传图片有误,msg:".$result.",code:".curl_errno($curl));
+            curl_close($curl);
+            exit;
+        }
+        curl_close($curl);
+        //返回值为json字符串，需通过json_decode解析为json对象
+        $json_obj = json_decode($result);
+        WechatReply::sendMessage($GLOBALS['my_openid'],"上传图片成功,media_id:".$json_obj->media_id);
+    }
+    /**
+     * 更新微信用户分组
+    */
+    public static function update_user_group($openid){
+        $access_token = self::get_access_token();
+        $url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=".$access_token;
+        $data = '{"openid":"'.$openid.'","to_groupid":100}';
+        $output = "";
+        $ret = self::http_curl($url,$output,$data);
+        if (!$ret) $output=json_encode(array());
+        return  $output;
     }
 }

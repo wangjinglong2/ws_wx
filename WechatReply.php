@@ -148,8 +148,8 @@ class WechatReply
 					         "content":"'.$message.'"
 					    }
 					}';
-        $ret = WechatApi::http_curl($url,$output,'post',$data);
-        return json_decode($output,true);
+        $ret = WechatApi::http_curl($url,$output,$data);
+        return $output;
     }
 
     //模版接口发信息
@@ -175,8 +175,8 @@ class WechatReply
 			                   }
 			           }
 			       }';
-        $ret = WechatApi::http_curl($url,$output,'post',$data);
-        return  json_decode($output,true);;
+        $ret = WechatApi::http_curl($url,$output,$data);
+        return  $output;
     }
     //获取客服列表
     function getkfopenids(){
