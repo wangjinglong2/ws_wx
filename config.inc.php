@@ -19,6 +19,6 @@ $db_name = "OrderMan";
 $db_port = 3306;
 
 $db = new mysqli($db_host,$db_user,$db_pwd,$db_name,$db_port);
-if (mysqli_connect_errno()) die("数据库连接失败,msg:".mysqli_connect_error());
+if (mysqli_connect_errno()) die("数据库连接失败,msg:".mysqli_connect_error()."errno:".mysqli_connect_errno());
 ?>
 
