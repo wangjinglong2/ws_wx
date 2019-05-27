@@ -6,10 +6,16 @@ $app_id = "wx7862699af0335b9a";
 $app_secret = "509a0ca98eead7b13bcf36a0419a9c5a";
 $my_openid = "oKzdw1cb2uh3Ow5Wd-M9OMB2ObZw";
 
-$db_host = "192.168.0.71";
-$db_user = "wjl";
-$db_pwd = "wjl123456WJL";
-$db_name = "ws_wx";
+//$db_host = "192.168.0.71";
+//$db_user = "wjl";
+//$db_pwd = "wjl123456WJL";
+//$db_name = "ws_wx";
+//$db_port = 3306;
+
+$db_host = "192.168.100.82";
+$db_user = "root";
+$db_pwd = "mudj3OD4";
+$db_name = "OrderMan";
 $db_port = 3306;
 
 $db = new mysqli($db_host,$db_user,$db_pwd,$db_name,$db_port);
