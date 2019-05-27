@@ -13,8 +13,8 @@ $my_openid = "oKzdw1cb2uh3Ow5Wd-M9OMB2ObZw";
 //$db_port = 3306;
 
 $db_host = "192.168.100.82";
-$db_user = "root";
-$db_pwd = "mudj3OD4";
+$db_user = "wjl";
+$db_pwd = "Wjl@Hhy1314";
 $db_name = "OrderMan";
 $db_port = 3306;
 
