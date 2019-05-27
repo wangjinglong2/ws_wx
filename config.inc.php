@@ -14,7 +14,7 @@ $my_openid = "oKzdw1cb2uh3Ow5Wd-M9OMB2ObZw";
 
 $db_host = "localhost";
 $db_user = "root";
-$db_pwd = "mudj3OD4";
+$db_pwd = "";
 $db_name = "OrderMan";
 $db_port = 3306;
 
